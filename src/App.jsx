@@ -415,7 +415,7 @@ export default function App() {
   const [sintoma,  setSintoma] = useState(null);
   const [fade,     setFade]    = useState(false);
   const [hov,      setHov]     = useState(null);
-  const [isMobile, setIsMobile]= useState(false);
+  const [isMobile, setIsMobile]= useState(() => typeof window !== "undefined" && window.innerWidth < 640);
   // Fallback: manual "Ya lo llené" button visible after 8s on step 3
   const [showManual, setShowManual] = useState(false);
   const manualTimer = useRef(null);
@@ -664,12 +664,8 @@ export default function App() {
                 Cada perfil tiene sus propias Skills prioritarias. Elige el tuyo para ver cuáles necesitas primero.
               </p>
 
-              {/* Grid de perfiles — 2 cols desktop, 1 col mobile */}
-              <div id="perfiles-grid" style={{
-                display:"grid",
-                gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-                gap:"10px",
-              }}>
+              {/* Grid de perfiles — 1 columna mobile, 2 desktop. Vía CSS puro (sin dependencia de isMobile/JS) para evitar el parpadeo de layout de escritorio antes de que React monte. */}
+              <div id="perfiles-grid" className="perfiles-grid">
                 {PERFILES.map((p, i)=>{
                   const accentColor = C.emerald;
                   const accentRgb   = C.emerald_rgb || "46,230,166";
@@ -709,13 +705,13 @@ export default function App() {
                       {/* Text */}
                       <div style={{ flex:1, minWidth:0 }}>
                         <div style={{
-                          fontSize: isMobile?"14px":"15px", fontWeight:700,
+                          fontSize: isMobile?"15px":"15px", fontWeight:700,
                           color: isHov ? "#faf8f4" : C.text,
                           fontFamily:font, marginBottom:"4px",
                           lineHeight:1.3, transition:"color 0.16s ease",
                         }}>{p.titulo}</div>
                         <div style={{
-                          fontSize: isMobile?"12px":"13px", color:C.sub,
+                          fontSize: isMobile?"13px":"13px", color:C.sub,
                           fontFamily:font, lineHeight:1.5,
                         }}>{p.desc}</div>
                       </div>
@@ -1077,6 +1073,8 @@ export default function App() {
         button:focus-visible { outline:2px solid rgba(46,230,166,0.5); outline-offset:2px; }
         @media (max-width:639px) { body { overflow-x:hidden; } }
         @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+        .perfiles-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        @media (max-width:700px) { .perfiles-grid { grid-template-columns:1fr; } }
       `}</style>
     </div>
   );
