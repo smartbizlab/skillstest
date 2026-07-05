@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from "react";
 const C = {
   bg:      "#161512",
   surface: "#1f1d18",
-  border:  "#332f27",
+  border:  "#3d372c",
   rust:    "#C2622E",
   emerald: "#2EE6A6",
   text:    "#f5f1ea",
@@ -506,7 +506,7 @@ export default function App() {
         position:"fixed", inset:0, pointerEvents:"none", zIndex:0,
         background:`
           radial-gradient(ellipse 80vw 50vh at 0% 0%,   rgba(46,230,166,0.06) 0%, transparent 60%),
-          radial-gradient(ellipse 70vw 50vh at 100% 100%, rgba(167,139,250,0.07) 0%, transparent 60%)
+          radial-gradient(ellipse 70vw 50vh at 100% 100%, rgba(46,230,166,0.06) 0%, transparent 60%)
         `,
       }}/>
       <div style={{
@@ -793,7 +793,7 @@ export default function App() {
                   onMouseEnter={()=>setHov(s.id)}
                   onMouseLeave={()=>setHov(null)}
                   style={{
-                    background: hov===s.id ? "rgba(167,139,250,0.06)" : "rgba(15,22,41,0.8)",
+                    background: hov===s.id ? "rgba(46,230,166,0.08)" : "rgba(36,32,25,0.92)",
                     border:`1.5px solid ${hov===s.id ? C.emerald : C.border}`,
                     borderRadius:"10px",
                     padding: isMobile?"14px 16px":"16px 20px",
@@ -804,7 +804,7 @@ export default function App() {
                 >
                   <span style={{
                     width:32, height:32, borderRadius:"8px", flexShrink:0,
-                    background: hov===s.id ? "rgba(167,139,250,0.12)" : C.border,
+                    background: hov===s.id ? "rgba(46,230,166,0.15)" : C.border,
                     display:"flex", alignItems:"center", justifyContent:"center",
                     fontSize:"12px", fontWeight:700,
                     color: hov===s.id ? C.emerald : C.muted,
@@ -857,7 +857,7 @@ export default function App() {
 
             {/* GHL iframe */}
             <div style={{
-              background:"rgba(15,22,41,0.6)",
+              background:"rgba(36,32,25,0.75)",
               border:`1px solid ${C.border}`,
               borderRadius:"12px",
               overflow:"hidden",
@@ -954,7 +954,7 @@ export default function App() {
             <div style={{ display:"flex", flexDirection:"column", gap:"12px", marginBottom: isMobile?"28px":"36px" }}>
               {skills.map((sk,i)=>(
                 <div key={i} style={{
-                  background:"rgba(15,22,41,0.9)",
+                  background:"rgba(36,32,25,0.95)",
                   border:`1.5px solid ${C.border}`,
                   borderLeft:`4px solid ${ACCENT}`,
                   borderRadius:"10px",
@@ -994,7 +994,7 @@ export default function App() {
 
             {/* CTAs */}
             <div style={{
-              background:"rgba(15,22,41,0.6)",
+              background:"rgba(36,32,25,0.75)",
               border:`1px solid ${C.border}`,
               borderRadius:"12px",
               padding: isMobile?"20px":"28px",
