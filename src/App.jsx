@@ -358,14 +358,13 @@ function GHLForm({ onSubmit, perfilId, sintomaId }) {
         );
         if (!isGHL) return;
 
-        // Detect submission success signal
+        // Señal explícita de envío exitoso — sin heurístico de resize (ver nota en el componente principal)
         const isSubmit =
           data?.type === "form_submitted" ||
           data?.event === "form_submitted" ||
           data?.message === "form_submitted" ||
           data?.action === "submit" ||
-          data?.submitted === true ||
-          (data?.type === "resize" && data?.height > 0 && paso3Submitted.current);
+          data?.submitted === true;
 
         if (isSubmit) {
           onSubmit();
@@ -416,7 +415,8 @@ export default function App() {
   const [fade,     setFade]    = useState(false);
   const [hov,      setHov]     = useState(null);
   const [isMobile, setIsMobile]= useState(() => typeof window !== "undefined" && window.innerWidth < 640);
-  // Fallback: manual "Ya lo llené" button visible after 8s on step 3
+  // showManual se activa únicamente por la señal explícita de éxito de GHL (ver useEffect abajo).
+  // manualTimer queda declarado sin uso activo — no hay temporizador de fallback por tiempo.
   const [showManual, setShowManual] = useState(false);
   const manualTimer = useRef(null);
 
@@ -427,7 +427,11 @@ export default function App() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Detect GHL form submission via postMessage
+  // Detecta el envío exitoso del formulario GHL exclusivamente por la señal explícita
+  // de postMessage. Se eliminó el heurístico por resize del iframe: contaba cualquier
+  // cambio de altura >30px (incluyendo el que genera GHL al mostrar errores de validación
+  // en campos vacíos) como si fuera un submit exitoso — eso causaba el falso positivo
+  // reportado (formulario en blanco + enviar → aparecía igual el botón "Ver mi diagnóstico").
   useEffect(() => {
     if (paso !== 3) return;
     paso3Submitted.current = false;
@@ -436,7 +440,6 @@ export default function App() {
     const handler = (e) => {
       try {
         const raw = typeof e.data === "string" ? e.data : JSON.stringify(e.data);
-        // GHL emits various signals on submit — catch all of them
         const signals = [
           "form_submitted", "formSubmitted", "submitted",
           "thankyou", "thank_you", "success", "gtm.formSubmit"
@@ -449,30 +452,8 @@ export default function App() {
       } catch {}
     };
 
-    // Also observe iframe resize — GHL changes height after submit
-    const iframe = document.querySelector('iframe[data-form-id]');
-    let prevHeight = 0;
-    let resizeCount = 0;
-    const resizeObserver = iframe ? new ResizeObserver(() => {
-      const h = iframe.offsetHeight;
-      if (prevHeight > 0 && Math.abs(h - prevHeight) > 30) {
-        resizeCount++;
-        // Two resize events after load = likely a submit + confirmation render
-        if (resizeCount >= 2 && !paso3Submitted.current) {
-          paso3Submitted.current = true;
-          setShowManual(true);
-        }
-      }
-      prevHeight = h;
-    }) : null;
-
     window.addEventListener("message", handler);
-    if (resizeObserver && iframe) resizeObserver.observe(iframe);
-
-    return () => {
-      window.removeEventListener("message", handler);
-      if (resizeObserver) resizeObserver.disconnect();
-    };
+    return () => window.removeEventListener("message", handler);
   }, [paso]);
 
   const go = (n) => {
@@ -854,12 +835,24 @@ export default function App() {
               border:`1px solid ${C.border}`,
               borderRadius:"12px",
               overflow:"hidden",
-              marginBottom:"16px",
+              marginBottom:"12px",
             }}>
               <GHLForm onSubmit={handleFormSubmit} perfilId={perfil} sintomaId={sintoma} />
             </div>
 
-            {/* Fallback manual button — aparece después de 8s */}
+            {/* Mensaje instructivo — visible mientras no llega la señal real de envío exitoso de GHL.
+                No detecta "formulario en blanco" como evento propio (imposible desde la página padre,
+                restricción cross-origin) — informa qué hacer en vez de asumir un estado que no se puede verificar. */}
+            {!showManual && (
+              <p style={{
+                fontSize:"13px", color:C.sub, fontFamily:font,
+                textAlign:"center", marginBottom:"16px", lineHeight:1.5,
+              }}>
+                Introduce tus datos para ver las habilidades para tu perfil.
+              </p>
+            )}
+
+            {/* Botón — aparece únicamente tras la señal explícita de envío exitoso de GHL */}
             {showManual && (
               <div style={{
                 textAlign:"center",
@@ -1013,27 +1006,9 @@ export default function App() {
                     cursor:"pointer", textAlign:"center",
                     transition:"background 0.16s ease", width:"100%",
                   }}
-                  onClick={()=>window.open("https://rodolfobuitrago.com/skillspack","_blank")}
+                  onClick={()=>window.open("https://skillspack.rodolfobuitrago.com/","_blank")}
                 >
                   Ver Pack completo para mi perfil →
-                </button>
-                <button
-                  onMouseEnter={()=>setHov("single")}
-                  onMouseLeave={()=>setHov(null)}
-                  style={{
-                    background:"transparent",
-                    color: hov==="single" ? C.emerald : C.sub,
-                    border:`1.5px solid ${hov==="single" ? C.emerald : C.border}`,
-                    borderRadius:"100px",
-                    padding: isMobile?"15px 24px":"15px 28px",
-                    fontSize:"13px", textTransform:"uppercase",
-                    fontFamily:font, fontWeight:600, letterSpacing:"0.06em",
-                    cursor:"pointer", textAlign:"center",
-                    transition:"all 0.16s ease", width:"100%",
-                  }}
-                  onClick={()=>window.open("https://rodolfobuitrago.com/skillspack","_blank")}
-                >
-                  Obtener solo la primera Skill →
                 </button>
               </div>
             </div>
