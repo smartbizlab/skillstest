@@ -5,12 +5,12 @@ import { useState, useEffect, useRef } from "react";
    rust = acción (CTA), esmeralda = informativo (dato/badge). Nunca ambos como CTA en la misma pieza. */
 const C = {
   bg:      "#161512",
-  surface: "#1f1d18",
-  border:  "#3d372c",
+  surface: "#201f1b",   /* carbon-soft — hex exacto de design-tokens-diagnostico.md */
+  border:  "#332f28",   /* carbon-line — hex exacto */
   rust:    "#C2622E",
   emerald: "#2EE6A6",
-  text:    "#f5f1ea",
-  sub:     "#a8a196",
+  text:    "#F2F0EA",   /* hex exacto */
+  sub:     "#a8a49a",   /* text-muted — hex exacto */
   muted:   "#6b665c",
 };
 const ACCENT     = C.emerald;          // único acento informativo (sustituye la rotación de 3 colores anterior)
@@ -535,7 +535,7 @@ export default function App() {
 
         {/* EYEBROW */}
         <div style={{
-          fontSize:"11px", letterSpacing:"0.2em", color:C.emerald,
+          fontSize: isMobile?"13px":"11px", letterSpacing:"0.16em", color:C.emerald,
           textTransform:"uppercase", marginBottom:"12px",
           opacity:0.6, fontFamily:font, fontWeight:500,
         }}>
@@ -574,7 +574,7 @@ export default function App() {
                 marginBottom: isMobile?"20px":"28px",
               }}>
                 <span style={{ width:7, height:7, borderRadius:"50%", background:C.emerald, display:"inline-block", flexShrink:0, animation:"pulse 2s ease-in-out infinite" }}/>
-                <span style={{ fontSize:"12px", color:C.emerald, fontFamily:font, fontWeight:600, letterSpacing:"0.04em" }}>
+                <span style={{ fontSize: isMobile?"13px":"12px", color:C.emerald, fontFamily:font, fontWeight:600, letterSpacing:"0.04em" }}>
                   Sistema de diagnóstico · Smart Business
                 </span>
               </div>
@@ -637,7 +637,7 @@ export default function App() {
             {/* ── PERFILES ── */}
             <div style={{ marginBottom: isMobile?"40px":"56px" }}>
               <div style={{
-                fontSize:"11px", color:C.emerald, letterSpacing:"0.16em",
+                fontSize: isMobile?"13px":"11px", color:C.emerald, letterSpacing:"0.14em",
                 fontFamily:font, fontWeight:700, textTransform:"uppercase",
                 marginBottom:"12px",
                 textAlign: isMobile?"left":"center",
@@ -687,20 +687,17 @@ export default function App() {
                         transition:"all 0.16s ease",
                       }}
                     >
-                      {/* Accent bar */}
+                      {/* Accent — único acento del bloque: borde izquierdo 2px (regla design-tokens: nunca dos usos del mismo color compitiendo) */}
                       <div style={{
                         position:"absolute", top:0, left:0,
-                        width:"3px", height:"100%",
+                        width:"2px", height:"100%",
                         background: accentColor, borderRadius:"12px 0 0 12px",
                       }}/>
-                      {/* Icon */}
+                      {/* Icon — glifo plano en esmeralda, sin fondo/borde propio para no competir con el acento del borde */}
                       <div style={{
-                        width:38, height:38, borderRadius:"10px", flexShrink:0,
-                        background:`rgba(${accentRgb},${isHov?"0.15":"0.1"})`,
-                        border:`1px solid rgba(${accentRgb},0.25)`,
+                        width:38, height:38, flexShrink:0,
                         display:"flex", alignItems:"center", justifyContent:"center",
-                        fontSize:"17px", color: accentColor,
-                        transition:"background 0.16s ease",
+                        fontSize:"19px", color: accentColor,
                       }}>{p.icon}</div>
                       {/* Text */}
                       <div style={{ flex:1, minWidth:0 }}>
@@ -746,14 +743,14 @@ export default function App() {
                 onMouseLeave={()=>setHov(null)}
                 style={{
                   background: hov==="start" ? "#A24F23" : C.rust,
-                  color:"#161512", border:"none", borderRadius:"12px",
-                  padding: isMobile?"18px 28px":"20px 48px",
-                  fontSize: isMobile?"16px":"18px",
-                  fontFamily:font, fontWeight:800, cursor:"pointer",
+                  color:"#161512", border:"none", borderRadius:"100px",
+                  padding: isMobile?"18px 32px":"18px 40px",
+                  fontSize:"13px", textTransform:"uppercase",
+                  fontFamily:font, fontWeight:700, cursor:"pointer",
                   transition:"all 0.18s ease",
                   width: isMobile?"100%":"auto",
                   boxShadow: hov==="start" ? "0 8px 32px rgba(194,98,46,0.35)" : "0 4px 20px rgba(194,98,46,0.2)",
-                  letterSpacing:"-0.01em",
+                  letterSpacing:"0.06em",
                 }}
               >
                 Comenzar diagnóstico →
@@ -881,10 +878,11 @@ export default function App() {
                   onMouseLeave={()=>setHov(null)}
                   style={{
                     background: hov==="manual" ? "#A24F23" : C.rust,
-                    color:"#161512", border:"none", borderRadius:"8px",
-                    padding:"12px 24px", fontSize:"14px",
-                    fontFamily:font, fontWeight:700,
+                    color:"#161512", border:"none", borderRadius:"100px",
+                    padding:"13px 26px", fontSize:"13px", textTransform:"uppercase",
+                    fontFamily:font, fontWeight:700, letterSpacing:"0.06em",
                     cursor:"pointer", transition:"background 0.16s ease",
+                    width: isMobile ? "100%" : "auto",
                   }}
                 >
                   Ver mi diagnóstico →
@@ -925,7 +923,7 @@ export default function App() {
               padding: isMobile?"14px 16px":"16px 20px",
               marginBottom: isMobile?"24px":"32px",
             }}>
-              <div style={{ fontSize:"11px", color:C.emerald, letterSpacing:"0.14em", fontFamily:font, fontWeight:700, marginBottom:"10px", textTransform:"uppercase" }}>
+              <div style={{ fontSize: isMobile?"13px":"11px", color:C.emerald, letterSpacing:"0.12em", fontFamily:font, fontWeight:700, marginBottom:"10px", textTransform:"uppercase" }}>
                 Tu diagnóstico
               </div>
               <div style={{ fontSize: isMobile?"13px":"14px", color:C.sub, marginBottom:"4px", fontFamily:font }}>
@@ -996,7 +994,7 @@ export default function App() {
               padding: isMobile?"20px":"28px",
               marginBottom:"20px",
             }}>
-              <div style={{ fontSize:"11px", color:C.emerald, letterSpacing:"0.14em", fontFamily:font, fontWeight:700, marginBottom:"10px", textTransform:"uppercase" }}>
+              <div style={{ fontSize: isMobile?"13px":"11px", color:C.emerald, letterSpacing:"0.12em", fontFamily:font, fontWeight:700, marginBottom:"10px", textTransform:"uppercase" }}>
                 ¿Qué sigue?
               </div>
               <p style={{ fontSize: isMobile?"14px":"15px", color:C.sub, lineHeight:1.7, fontFamily:font, marginBottom:"18px" }}>
@@ -1008,11 +1006,11 @@ export default function App() {
                   onMouseLeave={()=>setHov(null)}
                   style={{
                     background: hov==="pack" ? "#A24F23" : C.rust,
-                    color:"#161512", border:"none", borderRadius:"8px",
-                    padding: isMobile?"16px 20px":"16px 24px",
-                    fontSize: isMobile?"15px":"16px",
-                    fontFamily:font, fontWeight:700,
-                    cursor:"pointer", textAlign:"left",
+                    color:"#161512", border:"none", borderRadius:"100px",
+                    padding: isMobile?"16px 24px":"16px 28px",
+                    fontSize:"13px", textTransform:"uppercase",
+                    fontFamily:font, fontWeight:700, letterSpacing:"0.06em",
+                    cursor:"pointer", textAlign:"center",
                     transition:"background 0.16s ease", width:"100%",
                   }}
                   onClick={()=>window.open("https://rodolfobuitrago.com/skillspack","_blank")}
@@ -1026,11 +1024,11 @@ export default function App() {
                     background:"transparent",
                     color: hov==="single" ? C.emerald : C.sub,
                     border:`1.5px solid ${hov==="single" ? C.emerald : C.border}`,
-                    borderRadius:"8px",
-                    padding: isMobile?"15px 20px":"15px 24px",
-                    fontSize: isMobile?"15px":"16px",
-                    fontFamily:font, fontWeight:600,
-                    cursor:"pointer", textAlign:"left",
+                    borderRadius:"100px",
+                    padding: isMobile?"15px 24px":"15px 28px",
+                    fontSize:"13px", textTransform:"uppercase",
+                    fontFamily:font, fontWeight:600, letterSpacing:"0.06em",
+                    cursor:"pointer", textAlign:"center",
                     transition:"all 0.16s ease", width:"100%",
                   }}
                   onClick={()=>window.open("https://rodolfobuitrago.com/skillspack","_blank")}
@@ -1057,7 +1055,7 @@ export default function App() {
           paddingTop:"16px",
           borderTop:`1px solid ${C.border}`,
           display:"flex", justifyContent:"space-between", alignItems:"center",
-          fontSize:"11px", color:C.muted, fontFamily:font, letterSpacing:"0.06em",
+          fontSize: isMobile?"12px":"11px", color:C.muted, fontFamily:font, letterSpacing:"0.06em",
         }}>
           <span style={{ fontWeight:600 }}>SMART BUSINESS</span>
           <span style={{ color:"rgba(46,230,166,0.2)", fontSize:"16px" }}>◈</span>
@@ -1066,13 +1064,15 @@ export default function App() {
       </div>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap');
         *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
         html { -webkit-text-size-adjust:100%; }
         button { -webkit-tap-highlight-color:transparent; }
         button:focus-visible { outline:2px solid rgba(46,230,166,0.5); outline-offset:2px; }
         @media (max-width:639px) { body { overflow-x:hidden; } }
         @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+        body { font-weight:300; } /* regla de design-tokens-diagnostico.md sección 2 */
+        @media (max-width:599px) { body { font-weight:400; } }
         .perfiles-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
         @media (max-width:700px) { .perfiles-grid { grid-template-columns:1fr; } }
       `}</style>
