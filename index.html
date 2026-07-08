@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico de Skills | Smart Business</title>
+<meta name="description" content="Descubre en 2 minutos las 3 skills de Claude más importantes para tu perfil profesional.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://link.msgsndr.com/js/form_embed.js"></script>
+<style>
+  :root{
+    --carbon:#161512;
+    --card:#2a2620;
+    --card-border:#3a3529;
+    --rust:#C2622E;
+    --emerald:#2EE6A6;
+    --text:#f2ede4;
+    --muted:#9a948a;
+    --font-display:'Playfair Display', serif;
+    --font-body:'DM Sans', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--carbon);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:720px;
+    margin:0 auto;
+    padding:48px 24px 64px;
+  }
+  .eyebrow{
+    font-size:13px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--emerald);
+    font-weight:700;
+    margin-bottom:16px;
+  }
+  .progress{
+    display:flex;
+    gap:8px;
+    margin-bottom:40px;
+  }
+  .progress span{
+    height:4px;
+    flex:1;
+    border-radius:2px;
+    background:var(--card-border);
+    transition:background .3s ease;
+  }
+  .progress span.filled{ background:var(--emerald); }
+
+  h1,h2,h3{ font-family:var(--font-display); font-weight:700; margin:0 0 12px; }
+  h1{ font-size:32px; line-height:1.2; }
+  h2{ font-size:26px; line-height:1.25; }
+  p.lead{ color:var(--muted); font-size:17px; margin:0 0 32px; }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:24px;
+    margin-bottom:16px;
+    cursor:pointer;
+    transition:border-color .2s ease, transform .15s ease;
+  }
+  .card:hover{ border-color:var(--emerald); transform:translateY(-2px); }
+  .card:focus-visible{ outline:2px solid var(--emerald); outline-offset:2px; }
+  .card.static{ cursor:default; }
+  .card.static:hover{ transform:none; border-color:var(--card-border); }
+  .card.disabled{
+    opacity:0.45;
+    cursor:not-allowed;
+  }
+  .card.disabled:hover{ transform:none; border-color:var(--card-border); }
+
+  .card-title{ font-weight:700; font-size:17px; margin-bottom:4px; }
+  .card-sub{ color:var(--muted); font-size:14px; }
+  .badge-soon{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    background:var(--emerald);
+    color:var(--carbon);
+    padding:3px 8px;
+    border-radius:6px;
+    margin-left:8px;
+    vertical-align:middle;
+  }
+
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:560px){ .grid{ grid-template-columns:1fr; } }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:var(--rust);
+    color:var(--carbon);
+    border:none;
+    font-family:var(--font-body);
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:.02em;
+    text-transform:uppercase;
+    padding:16px 28px;
+    border-radius:999px;
+    cursor:pointer;
+    width:100%;
+    text-decoration:none;
+  }
+  .btn:hover{ filter:brightness(1.08); }
+  .link-back{
+    color:var(--muted);
+    font-size:14px;
+    text-decoration:none;
+    display:inline-block;
+    margin-top:24px;
+  }
+  .link-back:hover{ color:var(--text); }
+
+  .skill-card{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:24px;
+    margin-bottom:16px;
+    display:flex;
+    gap:16px;
+  }
+  .skill-num{
+    color:var(--emerald);
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:20px;
+    min-width:28px;
+  }
+  .skill-body h3{ font-size:18px; margin-bottom:6px; }
+  .skill-body p{ margin:0; color:var(--muted); font-size:15px; }
+
+  .recap{ color:var(--muted); font-size:15px; margin-bottom:32px; }
+  .recap b{ color:var(--text); }
+
+  .cta-box{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:28px;
+    text-align:center;
+    margin-top:24px;
+  }
+  .cta-box p{ margin:0 0 20px; color:var(--text); font-size:16px; }
+
+  .lock{
+    width:56px; height:56px;
+    border-radius:14px;
+    background:var(--card);
+    border:1px solid var(--emerald);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:20px;
+    font-size:24px;
+  }
+
+  .footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-top:1px solid var(--card-border);
+    margin-top:56px;
+    padding-top:20px;
+    font-size:12px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  .form-note{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:20px;
+    font-size:15px;
+    color:var(--text);
+  }
+  .ghl-frame-wrap{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    overflow:hidden;
+    min-height:420px;
+    position:relative;
+  }
+  .ghl-loading{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--muted); font-size:14px;
+  }
+  iframe.ghl-iframe{
+    width:100%; border:none; display:block; min-height:420px;
+  }
+
+  .thankyou-wrap{ text-align:center; padding:40px 0; }
+  .thankyou-wrap h2{ margin-bottom:12px; }
+  .thankyou-wrap p{ color:var(--muted); margin-bottom:32px; }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* =========================================================
+   DATOS — agregar un perfil nuevo = agregar una entrada aquí,
+   no tocar el motor de abajo.
+   ========================================================= */
+
+// Copy corto por skill (nombre exacto = nombre en la landing del perfil)
+const SKILLS = {
+  // Consultor / Coach
+  "Diagnóstico de modelo de negocio": "Revisa cómo generas ingresos hoy y detecta si el problema es de precio, de oferta o de falta de clientes nuevos.",
+  "Diseño de oferta y precio": "Estructura qué incluye tu servicio y cuánto cobras por él, para dejar de improvisar el precio cada vez que alguien pregunta.",
+  "Propuestas comerciales": "Redacta el documento que le mandas a un prospecto después de la llamada, con alcance y precio claros para que no se enfríe la decisión.",
+  "Posicionamiento personal": "Define para quién eres el consultor indicado y qué prometes distinto a los demás, para que dejes de sonar genérico.",
+  "Contenido que atrae clientes": "Te da ideas y estructura de contenido que trae prospectos, sin que tengas que inventar qué publicar cada semana.",
+  "Conversación de ventas": "Prepara lo que vas a decir en la llamada de venta, para que no se te vaya el hilo ni termines regalando la sesión.",
+  "Manejo de objeciones de precio": "Te da respuestas para cuando un prospecto dice “está caro” o “lo voy a pensar”, sin bajar el precio por reflejo.",
+  "Onboarding de clientes": "Estructura los primeros pasos con un cliente nuevo para que arranque con claridad y no te bombardee de preguntas la primera semana.",
+  "Seguimiento y gestión de relación": "Te ayuda a mantener el contacto con clientes activos y pasados sin sonar a venta forzada.",
+  "Entregables y reportes": "Redacta lo que le entregas al cliente durante el servicio (sesiones, avances, resúmenes) de forma profesional y sin improvisar.",
+
+  // Vendedor B2B
+  "Gestión del pipeline y CRM": "Convierte notas de reunión en campos estructurados del CRM en minutos, para no perder media hora actualizando el sistema después de cada llamada.",
+  "Comunicación interna de ventas": "Genera el reporte semanal o el forecast que le mandas a tu manager, sin invertir la mañana armándolo desde cero.",
+  "Coordinación con equipos internos": "Prepara el mensaje de traspaso a producto, soporte o legal cuando un negocio avanza, para que nadie se quede sin contexto.",
+  "Investigación y preparación de cuenta": "Arma el brief de la empresa y del contacto antes de escribir o de entrar a la reunión, para no llegar a ciegas.",
+  "Prospección y primer contacto": "Redacta el mensaje de primer contacto por canal (email, LinkedIn, llamada) con una estructura que sí genera respuesta.",
+  "Seguimiento de clientes y prospectos": "Te dice qué decir en el segundo y tercer contacto sin repetir el primero, sea con un prospecto frío o con una propuesta enviada.",
+  "Propuesta comercial ejecutiva": "Redacta la propuesta de forma que el siguiente paso quede claro, en vez de terminar en un documento que nadie contesta.",
+  "Manejo de objeciones y cierre": "Te da respuestas cuando el silencio se rompe con una objeción, para cerrar sin regalar condiciones.",
+  "Presentación y demo de valor": "Estructura la agenda, las preguntas y las posibles objeciones antes de una reunión o demo con un cliente específico.",
+  "Diagnóstico y validación": "Confirma contigo, después de la reunión, qué se dijo realmente y cuál es el próximo paso acordado, para no depender de la memoria.",
+
+  // Afiliado digital
+  "Análisis de páginas de ventas": "Evalúa si la página del vendedor convierte bien antes de mandarle tráfico, para no quemar tu audiencia con una oferta floja.",
+  "Bridge pages": "Construye una página intermedia propia cuando la página del vendedor es débil, para no perder la venta antes de que llegue.",
+  "Reviews y comparativas": "Redacta reviews y comparativas de producto que generan confianza y clics al link de afiliado, sin sonar a anuncio.",
+  "Segmentación de lista": "Divide tu lista de correos según interés o comportamiento, para saber a quién le mandas cada promoción.",
+  "Secuencias de email de promoción": "Redacta la serie de correos de un lanzamiento o promoción, del primer aviso al último recordatorio.",
+  "Análisis de métricas de email": "Interpreta aperturas, clics y bajas de tu lista para saber si el problema es el asunto, el contenido o a quién le estás escribiendo.",
+  "Creación de anuncios para afiliación": "Redacta el texto y estructura del anuncio pagado, adaptado a las reglas de la plataforma donde lo vas a correr.",
+  "Análisis de métricas de campaña": "Revisa el desempeño de tus anuncios pagados (CPC, CTR, ROAS) para decidir si escalas, pausas o ajustas la creativa.",
+  "Calendario editorial de promociones": "Organiza qué vas a promocionar y cuándo (lanzamientos, fechas clave), para no improvisar la promoción la noche anterior.",
+  "Contenido evergreen de afiliación": "Crea contenido que sigue generando tráfico y comisiones meses después de publicado, sin depender de una fecha de lanzamiento.",
+  "Análisis de portafolio de productos": "Te ayuda a decidir qué productos vale la pena promover según comisión, calidad y ajuste con tu audiencia.",
+
+  // Emprendedor online
+  "Autodiagnóstico de activos": "Revisa qué ya tienes para arrancar (habilidades, contactos, tiempo, dinero), para no esperar a “estar listo” antes de empezar.",
+  "Diseño de oferta mínima validable": "Convierte tu idea de negocio en una oferta chica que puedes vender ya, sin esperar a tener el producto o servicio terminado.",
+  "Validación financiera / modelo de ingresos": "Te ayuda a definir cómo vas a cobrar y si el número realmente cierra, antes de comprometerte con un precio.",
+  "Desbloqueador de parálisis": "Te ayuda a decidir y avanzar cuando llevas semanas dando vueltas a la misma decisión sin lanzar nada.",
+  "Definición de avatar": "Define con precisión a quién le vas a vender, para dejar de crear algo “para todos” que no le sirve a nadie en particular.",
+  "Secuencia de conversaciones": "Te da el guion para hablar con prospectos reales y confirmar si tu oferta o tu idea resuena, antes de invertir tiempo en construirla.",
+  "Análisis de competencia": "Revisa qué están haciendo otros en tu espacio, para encontrar en qué te diferencias en vez de copiar lo mismo.",
+  "Planificación semanal": "Ordena tu semana cuando estás empezando y todo parece urgente, para enfocarte en lo que mueve el negocio de verdad.",
+
+  // Agente inmobiliario
+  "Sistema de seguimiento": "Define cada cuánto y en qué orden le das seguimiento a cada tipo de prospecto, para no perder a nadie por falta de constancia.",
+  "Seguimiento de prospección": "Redacta el mensaje para retomar a alguien con quien hablaste hace días y no ha avanzado, sin sonar insistente.",
+  "Gestión de pipeline inmobiliario": "Organiza en qué etapa está cada prospecto (nuevo, contactado, visita, oferta, cierre), para saber dónde enfocar tu tiempo.",
+  "Posicionamiento del agente": "Define qué te hace distinto de los otros agentes de la zona, para dejar de competir solo por precio de comisión.",
+  "Contenido inmobiliario para redes": "Te da ideas y estructura de contenido que atrae compradores y vendedores, sin que tengas que inventar qué publicar cada semana.",
+  "Calendario editorial inmobiliario": "Organiza qué vas a publicar y cuándo, alineado con lanzamientos de propiedades o temporadas altas de búsqueda.",
+  "Investigación de prospecto": "Reúne lo que necesitas saber de un prospecto antes de contactarlo, para no llegar a ciegas a la primera conversación.",
+  "Mensajes de prospección inmobiliaria": "Redacta el primer mensaje de contacto con un prospecto nuevo, sin sonar a agente genérico que manda el mismo texto a todos.",
+  "Ficha de propiedad": "Redacta la ficha técnica de una propiedad con los datos clave, para tener algo consistente que enviar o mostrar.",
+  "Presentación de propiedad": "Redacta el pitch de venta de una propiedad orientado al comprador, resaltando lo que le importa a él, no solo specs.",
+  "Seguimiento post-visita": "Redacta el mensaje después de que alguien visitó una propiedad, para mantener el interés vivo sin presionar de más."
+};
+
+// slug -> URL de la landing individual del perfil (AJUSTAR si la ruta real difiere)
+const LANDING_BASE = "https://skillspack.rodolfobuitrago.com/";
+
+const PROFILES = [
+  {
+    slug: "consultor-coach",
+    name: "Consultor / Coach independiente",
+    tagline: "Vive de tu conocimiento, no de tu tiempo facturable.",
+    hasData: true,
+    symptoms: [
+      { label: "Trabajo muchas horas pero no veo crecer mis ingresos",
+        skills: ["Diagnóstico de modelo de negocio","Diseño de oferta y precio","Propuestas comerciales"] },
+      { label: "No me llegan clientes solos y no sé cómo conseguirlos sin sentirme vendiendo",
+        skills: ["Posicionamiento personal","Contenido que atrae clientes","Conversación de ventas"] },
+      { label: "Cuando me preguntan cuánto cobro no sé cómo justificar mi precio",
+        skills: ["Diseño de oferta y precio","Manejo de objeciones de precio","Propuestas comerciales"] },
+      { label: "Cada cliente nuevo me exige empezar todo desde cero",
+        skills: ["Onboarding de clientes","Entregables y reportes","Seguimiento y gestión de relación"] }
+    ]
+  },
+  {
+    slug: "vendedor-b2b",
+    name: "Vendedor B2B empleado",
+    tagline: "Menos CRM, más conversaciones que cierran.",
+    hasData: true,
+    symptoms: [
+      { label: "Paso más tiempo en papeleos y reportes que hablando con clientes",
+        skills: ["Gestión del pipeline y CRM","Comunicación interna de ventas","Coordinación con equipos internos"] },
+      { label: "Escribo mensajes a prospectos y la mayoría no me responde",
+        skills: ["Investigación y preparación de cuenta","Prospección y primer contacto","Seguimiento de clientes y prospectos"] },
+      { label: "Mando propuestas y después no sé cómo darle seguimiento sin molestar",
+        skills: ["Propuesta comercial ejecutiva","Seguimiento de clientes y prospectos","Manejo de objeciones y cierre"] },
+      { label: "Llego a las reuniones sin saber cómo prepararme para ese cliente específico",
+        skills: ["Investigación y preparación de cuenta","Presentación y demo de valor","Diagnóstico y validación"] }
+    ]
+  },
+  {
+    slug: "afiliado-digital",
+    name: "Afiliado de productos digitales",
+    tagline: "Convierte tráfico en comisiones, no solo en clics.",
+    hasData: true,
+    symptoms: [
+      { label: "Tengo visitas pero casi nadie compra a través de mis links",
+        skills: ["Análisis de páginas de ventas","Bridge pages","Reviews y comparativas"] },
+      { label: "Mando emails a mi lista y las ventas no reflejan el esfuerzo que pongo",
+        skills: ["Segmentación de lista","Secuencias de email de promoción","Análisis de métricas de email"] },
+      { label: "Gasto en anuncios pero no logro que sean rentables de forma consistente",
+        skills: ["Creación de anuncios para afiliación","Análisis de métricas de campaña","Bridge pages"] },
+      { label: "Promoción tras promoción y siento que siempre estoy empezando de nuevo",
+        skills: ["Calendario editorial de promociones","Contenido evergreen de afiliación","Análisis de portafolio de productos"] }
+    ]
+  },
+  {
+    slug: "emprendedor-online",
+    name: "Emprendedor online",
+    tagline: "De la idea a la primera venta, sin dar vueltas.",
+    hasData: true,
+    symptoms: [
+      { label: "Sé que tengo conocimiento valioso pero no sé cómo convertirlo en algo que vender",
+        skills: ["Autodiagnóstico de activos","Diseño de oferta mínima validable","Validación financiera / modelo de ingresos"] },
+      { label: "No sé por dónde empezar y cada vez que investigo me confundo más",
+        skills: ["Desbloqueador de parálisis","Definición de avatar","Secuencia de conversaciones"] },
+      { label: "Tengo varias ideas pero no sé cuál elegir ni si alguna tiene mercado real",
+        skills: ["Secuencia de conversaciones","Análisis de competencia","Autodiagnóstico de activos"] },
+      { label: "Arranco proyectos con energía pero a la semana los abandono sin saber por qué",
+        skills: ["Desbloqueador de parálisis","Diseño de oferta mínima validable","Planificación semanal"] }
+    ]
+  },
+  {
+    slug: "agente-inmobiliario",
+    name: "Agente inmobiliario independiente",
+    tagline: "Menos prospectos fríos, más cierres.",
+    hasData: true,
+    symptoms: [
+      { label: "Tengo prospectos interesados pero se me enfrían porque no les doy seguimiento a tiempo",
+        skills: ["Sistema de seguimiento","Seguimiento de prospección","Gestión de pipeline inmobiliario"] },
+      { label: "No sé cómo usar redes sociales para atraer clientes sin parecer desesperado",
+        skills: ["Posicionamiento del agente","Contenido inmobiliario para redes","Calendario editorial inmobiliario"] },
+      { label: "Cuando escribo para contactar a alguien no sé qué decir para que me respondan",
+        skills: ["Investigación de prospecto","Mensajes de prospección inmobiliaria","Seguimiento de prospección"] },
+      { label: "Cada presentación de propiedad la improviso porque no tengo una estructura fija",
+        skills: ["Ficha de propiedad","Presentación de propiedad","Seguimiento post-visita"] }
+    ]
+  },
+  // Perfiles pendientes de datos — mismo motor, solo falta llenar "symptoms" y poner hasData:true
+  { slug:"gerente-pyme", name:"Gerente de PYME", tagline:"Próximamente", hasData:false, symptoms:[] },
+  { slug:"docente-formador", name:"Docente / Formador corporativo", tagline:"Próximamente", hasData:false, symptoms:[] },
+  { slug:"creador-contenido", name:"Creador de contenido", tagline:"Próximamente", hasData:false, symptoms:[] },
+  { slug:"abogado-independiente", name:"Abogado independiente", tagline:"Próximamente", hasData:false, symptoms:[] },
+  { slug:"talento-humano", name:"Profesional en Talento Humano", tagline:"Próximamente", hasData:false, symptoms:[] }
+];
+
+// Config del formulario GHL — AJUSTAR el formId/dominio y los nombres de campo si difieren de los reales
+const GHL_DOMAIN = "link.centralize.es";
+const GHL_FORM_ID = "E0DGPlNKwF71BjKkElAU";
+
+/* =========================================================
+   MOTOR — no debería necesitar cambios al agregar perfiles
+   ========================================================= */
+
+const state = { step: "landing", profile: null, symptomIndex: null };
+const app = document.getElementById("app");
+
+function esc(s){ return s.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+function progressBar(filledCount){
+  let segs = "";
+  for(let i=0;i<3;i++){ segs += `<span class="${i<filledCount ? 'filled':''}"></span>`; }
+  return `<div class="progress">${segs}</div>`;
+}
+
+function eyebrow(){ return `<div class="eyebrow">Skills Diagnóstico · Smart Business</div>`; }
+
+function render(){
+  if(state.step === "landing") return renderLanding();
+  if(state.step === "symptom") return renderSymptom();
+  if(state.step === "form") return renderForm();
+  if(state.step === "thankyou") return renderThankyou();
+  if(state.step === "result") return renderResult();
+}
+
+function renderLanding(){
+  const cards = PROFILES.map((p,i) => {
+    if(!p.hasData){
+      return `<div class="card disabled static">
+        <div class="card-title">${esc(p.name)} <span class="badge-soon">Próximamente</span></div>
+        <div class="card-sub">${esc(p.tagline)}</div>
+      </div>`;
+    }
+    return `<div class="card" tabindex="0" role="button" onclick="selectProfile(${i})" onkeydown="if(event.key==='Enter')selectProfile(${i})">
+      <div class="card-title">${esc(p.name)}</div>
+      <div class="card-sub">${esc(p.tagline)}</div>
+    </div>`;
+  }).join("");
+
+  app.innerHTML = `
+    ${eyebrow()}
+    ${progressBar(0)}
+    <h1>¿Qué tan bien equipado está tu Claude para tu trabajo?</h1>
+    <p class="lead">Elige tu perfil y en menos de 2 minutos te decimos cuáles son las 3 skills de Claude más importantes para resolver tu dolor de hoy. Ya están construidas y listas para instalar.</p>
+    <div class="grid">${cards}</div>
+    <div class="footer">
+      <span>Smart Business</span>
+      <span>◆</span>
+      <span>Skills para Claude</span>
+    </div>
+  `;
+}
+
+function selectProfile(i){
+  state.profile = PROFILES[i];
+  state.step = "symptom";
+  render();
+}
+
+function renderSymptom(){
+  const p = state.profile;
+  const cards = p.symptoms.map((s,i) => `
+    <div class="card" tabindex="0" role="button" onclick="selectSymptom(${i})" onkeydown="if(event.key==='Enter')selectSymptom(${i})">
+      <div class="card-title">${esc(s.label)}</div>
+    </div>
+  `).join("");
+
+  app.innerHTML = `
+    ${eyebrow()}
+    ${progressBar(1)}
+    <h2>${esc(p.name)}</h2>
+    <p class="lead">¿Cuál de estas situaciones describe mejor tu momento actual?</p>
+    ${cards}
+    <a href="#" class="link-back" onclick="goLanding(event)">← Cambiar de perfil</a>
+  `;
+}
+
+function selectSymptom(i){
+  state.symptomIndex = i;
+  state.step = "form";
+  render();
+}
+
+function buildGHLUrl(){
+  const p = state.profile;
+  const s = p.symptoms[state.symptomIndex];
+  const params = new URLSearchParams({
+    perfil: p.name,
+    problema: s.label,
+    skill_1: s.skills[0] || "",
+    skill_2: s.skills[1] || "",
+    skill_3: s.skills[2] || ""
+  });
+  return `https://${GHL_DOMAIN}/widget/form/${GHL_FORM_ID}?${params.toString()}`;
+}
+
+let resizeGraceTimer = null;
+let baselineHeight = null;
+
+function renderForm(){
+  const src = buildGHLUrl();
+  app.innerHTML = `
+    ${eyebrow()}
+    ${progressBar(1)}
+    <h2>Ya casi tienes tu diagnóstico</h2>
+    <div class="form-note">Para conocer las 3 habilidades (skills) más importantes que deberías tener, diligencia el formulario.</div>
+    <div class="ghl-frame-wrap" id="ghlWrap">
+      <div class="ghl-loading" id="ghlLoading">Cargando formulario…</div>
+      <iframe class="ghl-iframe" id="ghlFrame" src="${src}" onload="onFrameLoad()"></iframe>
+    </div>
+  `;
+  window.addEventListener("message", onGHLMessage);
+}
+
+function onFrameLoad(){
+  document.getElementById("ghlLoading").style.display = "none";
+  const frame = document.getElementById("ghlFrame");
+  baselineHeight = frame.offsetHeight;
+  // Grace period antes de activar la detección por salto de altura (evita falsos positivos
+  // mientras el formulario termina de renderizar sus propios campos)
+  clearTimeout(resizeGraceTimer);
+  resizeGraceTimer = setTimeout(() => {
+    startResizeWatch(frame);
+  }, 1200);
+}
+
+function startResizeWatch(frame){
+  if(!window.ResizeObserver) return;
+  const ro = new ResizeObserver(entries => {
+    for(const entry of entries){
+      const h = entry.contentRect.height;
+      if(baselineHeight != null && Math.abs(h - baselineHeight) > 80){
+        ro.disconnect();
+        onFormSubmitted();
+      }
+    }
+  });
+  ro.observe(frame);
+}
+
+function onGHLMessage(e){
+  // Los formularios de GoHighLevel notifican eventos por postMessage.
+  // Ajustar el chequeo de tipo/formId a lo que realmente envíe el formulario en producción.
+  if(!e.data) return;
+  const data = typeof e.data === "string" ? safeParse(e.data) : e.data;
+  if(!data) return;
+  if(data.formId === GHL_FORM_ID || data.type === "form-submit" || data.event === "form_submit"){
+    onFormSubmitted();
+  }
+}
+
+function safeParse(str){
+  try { return JSON.parse(str); } catch(e){ return null; }
+}
+
+function onFormSubmitted(){
+  window.removeEventListener("message", onGHLMessage);
+  state.step = "thankyou";
+  render();
+}
+
+function renderThankyou(){
+  app.innerHTML = `
+    ${eyebrow()}
+    ${progressBar(2)}
+    <div class="thankyou-wrap">
+      <h2>¡Apreciamos tu interés!</h2>
+      <p>Tu diagnóstico está listo y lo enviaremos a tu correo.</p>
+      <button class="btn" onclick="goResult()">Conoce tus skills</button>
+    </div>
+  `;
+}
+
+function goResult(){
+  state.step = "result";
+  render();
+}
+
+function renderResult(){
+  const p = state.profile;
+  const s = p.symptoms[state.symptomIndex];
+  const cards = s.skills.map((name, i) => `
+    <div class="skill-card">
+      <div class="skill-num">0${i+1}</div>
+      <div class="skill-body">
+        <h3>${esc(name)}</h3>
+        <p>${esc(SKILLS[name] || "")}</p>
+      </div>
+    </div>
+  `).join("");
+
+  const landingUrl = LANDING_BASE + p.slug + ".html";
+
+  app.innerHTML = `
+    ${eyebrow()}
+    ${progressBar(3)}
+    <div class="lock">🔒</div>
+    <h2>Tu diagnóstico está listo</h2>
+    <p class="recap">Perfil: <b>${esc(p.name)}</b> · Problema: <b>${esc(s.label)}</b></p>
+    ${cards}
+    <div class="cta-box">
+      <p>Estas 3 Skills ya están construidas y listas para instalar en Claude.</p>
+      <a class="btn" href="${landingUrl}" target="_blank" rel="noopener">Ver pack completo para mi perfil →</a>
+    </div>
+    <a href="#" class="link-back" onclick="goLanding(event)">← Hacer diagnóstico de nuevo</a>
+    <div class="footer">
+      <span>Smart Business</span>
+      <span>◆</span>
+      <span>Skills para Claude</span>
+    </div>
+  `;
+}
+
+function goLanding(e){
+  if(e) e.preventDefault();
+  state.step = "landing";
+  state.profile = null;
+  state.symptomIndex = null;
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
