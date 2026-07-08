@@ -509,7 +509,9 @@ export default function App() {
   };
   const reset = () => { setPerfil(null); setSintoma(null); go(0); };
 
-  // skills / perfilObj / sintomaObj se eliminaron — solo se usaban en paso 4 (resultado in-app), removido: el reporte ahora se envía por email.
+  const skills     = perfil && sintoma ? SKILLS[perfil]?.[sintoma] || [] : [];
+  const perfilObj  = PERFILES.find(p => p.id === perfil);
+  const sintomaObj = SINTOMAS[perfil]?.find(s => s.id === sintoma);
 
   return (
     <div style={{
@@ -561,10 +563,10 @@ export default function App() {
           Skills Diagnóstico · Smart Business
         </div>
 
-        {/* PROGRESS — pasos 2-3 (sintoma, form). Paso 4 (resultado in-app) eliminado — el reporte se envía por email. */}
+        {/* PROGRESS — pasos 2-4 (sintoma, form, resultado) */}
         {paso > 1 && (
           <div style={{ display:"flex", gap:"6px", marginBottom: isMobile?"28px":"36px" }}>
-            {[2,3].map((n,i)=>(
+            {[2,3,4].map((n,i)=>(
               <div key={i} style={{
                 height:"3px", flex:1, borderRadius:"2px",
                 background: paso > n ? C.emerald : paso === n ? C.emerald : "rgba(46,230,166,0.1)",
@@ -838,7 +840,7 @@ export default function App() {
               </p>
             )}
 
-            {/* Confirmación final — el formulario es la última pantalla del flujo. El reporte con las 3 skills se envía por email, no se muestra in-app. */}
+            {/* Confirmación final — el reporte se envía por email Y se muestra en la siguiente pantalla (paso 4). */}
             {showManual && (
               <div style={{
                 textAlign:"center",
@@ -851,9 +853,24 @@ export default function App() {
                 <p style={{ fontSize:"14px", color:"#faf8f4", fontFamily:font, fontWeight:700, marginBottom:"6px" }}>
                   ✓ Datos enviados correctamente
                 </p>
-                <p style={{ fontSize:"13px", color:C.sub, fontFamily:font, lineHeight:1.5 }}>
-                  Revisa tu correo — ahí te enviamos tu diagnóstico con las 3 Skills recomendadas.
+                <p style={{ fontSize:"13px", color:C.sub, fontFamily:font, lineHeight:1.5, marginBottom:"16px" }}>
+                  También te lo enviamos a tu correo.
                 </p>
+                <button
+                  onClick={()=>go(4)}
+                  onMouseEnter={()=>setHov("manual")}
+                  onMouseLeave={()=>setHov(null)}
+                  style={{
+                    background: hov==="manual" ? "#A24F23" : C.rust,
+                    color:"#161512", border:"none", borderRadius:"100px",
+                    padding:"13px 26px", fontSize:"13px", textTransform:"uppercase",
+                    fontFamily:font, fontWeight:700, letterSpacing:"0.06em",
+                    cursor:"pointer", transition:"background 0.16s ease",
+                    width: isMobile ? "100%" : "auto",
+                  }}
+                >
+                  Ver mi diagnóstico →
+                </button>
               </div>
             )}
 
@@ -866,6 +883,84 @@ export default function App() {
           </div>
         )}
 
+        {/* ══ PASO 4 — RESULTADO ══ */}
+        {paso === 4 && (
+          <div>
+            <div style={{
+              display:"flex", alignItems:"flex-start", gap:"14px",
+              marginBottom: isMobile?"24px":"32px",
+            }}>
+              <div style={{
+                width:44, height:44, borderRadius:"10px", flexShrink:0,
+                background:"rgba(46,230,166,0.1)", border:"1px solid rgba(46,230,166,0.25)",
+                display:"flex", alignItems:"center", justifyContent:"center", fontSize:"20px",
+              }}>🔓</div>
+              <div>
+                <h2 style={{ fontSize: isMobile?"20px":"24px", fontFamily:fontDisplay, fontWeight:800, color:"#faf8f4", marginBottom:"4px", lineHeight:1.2 }}>
+                  Tu diagnóstico está listo
+                </h2>
+                <p style={{ fontSize:"14px", color:C.sub, fontFamily:font, lineHeight:1.5 }}>
+                  Perfil: <span style={{ color:C.text, fontWeight:600 }}>{perfilObj?.titulo}</span>
+                  {" · "}
+                  Problema: <span style={{ color:C.text, fontWeight:600 }}>{sintomaObj?.txt}</span>
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display:"flex", flexDirection:"column", gap:"12px", marginBottom: isMobile?"28px":"36px" }}>
+              {skills.map((sk,i)=>(
+                <div key={i} style={{
+                  background:"rgba(36,32,25,0.75)", border:`1px solid ${C.border}`,
+                  borderRadius:"12px", padding: isMobile?"16px":"18px 20px",
+                  display:"flex", gap:"14px", alignItems:"flex-start",
+                }}>
+                  <span style={{ fontSize:"14px", color:C.emerald, fontWeight:800, fontFamily:font, flexShrink:0, marginTop:"2px" }}>0{i+1}</span>
+                  <div>
+                    <div style={{ fontSize: isMobile?"15px":"16px", fontWeight:700, color:"#faf8f4", fontFamily:font, marginBottom:"4px" }}>
+                      {sk.n}
+                    </div>
+                    <div style={{ fontSize:"13px", color:C.sub, fontFamily:font, lineHeight:1.5 }}>
+                      {sk.r}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{
+              background:"rgba(46,230,166,0.04)", border:"1px solid rgba(46,230,166,0.12)",
+              borderRadius:"12px", padding: isMobile?"18px":"22px", marginBottom:"20px", textAlign:"center",
+            }}>
+              <p style={{ fontSize:"13px", color:C.sub, fontFamily:font, marginBottom:"14px", lineHeight:1.5 }}>
+                Estas 3 Skills ya están construidas y listas para instalar en Claude.
+              </p>
+              <button
+                onMouseEnter={()=>setHov("pack")}
+                onMouseLeave={()=>setHov(null)}
+                style={{
+                  background: hov==="pack" ? "#A24F23" : C.rust,
+                  color:"#161512", border:"none", borderRadius:"100px",
+                  padding: isMobile?"16px 24px":"16px 28px",
+                  fontSize:"13px", textTransform:"uppercase",
+                  fontFamily:font, fontWeight:700, letterSpacing:"0.06em",
+                  cursor:"pointer", transition:"background 0.16s ease", width:"100%",
+                }}
+                onClick={()=>window.open("https://skillspack.rodolfobuitrago.com/","_blank")}
+              >
+                Ver Pack completo para mi perfil →
+              </button>
+            </div>
+
+            <button
+              onClick={reset}
+              onMouseEnter={e=>e.currentTarget.style.color=C.sub}
+              onMouseLeave={e=>e.currentTarget.style.color=C.muted}
+              style={{ background:"transparent", border:"none", color:C.muted, fontSize:"14px", cursor:"pointer", fontFamily:font, fontWeight:500, padding:"4px 0" }}
+            >
+              ← Hacer diagnóstico de nuevo
+            </button>
+          </div>
+        )}
 
         {/* FOOTER */}
         <div style={{
