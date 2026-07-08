@@ -524,18 +524,26 @@ function startResizeWatch(frame){
 }
 
 function onGHLMessage(e){
-  // Los formularios de GoHighLevel notifican eventos por postMessage.
-  // Ajustar el chequeo de tipo/formId a lo que realmente envíe el formulario en producción.
-  if(!e.data) return;
-  const data = typeof e.data === "string" ? safeParse(e.data) : e.data;
-  if(!data) return;
-  if(data.formId === GHL_FORM_ID || data.type === "form-submit" || data.event === "form_submit"){
-    onFormSubmitted();
-  }
-}
+  // Formato real de GoHighLevel: el mensaje llega como un ARRAY (no un objeto).
+  // - data[0] === 'msgsndr-booking-complete' → evento de calendario/booking (no aplica a este formulario, se deja por si acaso).
+  // - data[2] → string JSON con los campos del formulario enviado (incluye email, full_name, etc.)
+  const data = e.data;
+  if(!Array.isArray(data)) return;
 
-function safeParse(str){
-  try { return JSON.parse(str); } catch(e){ return null; }
+  if(data[0] === "msgsndr-booking-complete"){
+    onFormSubmitted();
+    return;
+  }
+
+  const inputJSON = data[2];
+  if(typeof inputJSON === "string"){
+    try{
+      const parsed = JSON.parse(inputJSON);
+      if(parsed && (parsed.email || parsed.full_name || parsed.customer_id)){
+        onFormSubmitted();
+      }
+    } catch(err){ /* no era JSON del formulario, se ignora */ }
+  }
 }
 
 function onFormSubmitted(){
