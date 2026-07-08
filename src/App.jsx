@@ -32,7 +32,7 @@ const PERFILES = [
   { id:"inmobiliario", icon:"□", titulo:"Agente inmobiliario independiente",          desc:"Vendes o rentas propiedades de forma independiente" },
   { id:"creador",      icon:"◉", titulo:"Creador de contenido que quiere monetizar",  desc:"Tienes audiencia y quieres convertirla en ingresos reales" },
   { id:"rrhh",         icon:"◐", titulo:"Profesional de recursos humanos",            desc:"Gestionas talento, selección, onboarding o capacitación en una empresa" },
-  { id:"independiente",icon:"◑", titulo:"Abogado o contador independiente",           desc:"Ofreces servicios profesionales de forma independiente" },
+  { id:"independiente",icon:"◑", titulo:"Abogado independiente",                          desc:"Ofreces servicios profesionales de forma independiente" },
   { id:"docente",      icon:"◒", titulo:"Docente o formador corporativo",             desc:"Diseñas y facilitas capacitaciones, talleres o programas de formación" },
   { id:"pyme",         icon:"◓", titulo:"Gerente de pequeña empresa (PYME)",          desc:"Diriges una pequeña empresa y usualmente operas en múltiples roles" },
 ];
@@ -327,7 +327,16 @@ const SKILLS = {
 function buildGHLUrl(perfil, sintoma) {
   const perfilLabel  = PERFILES.find(p => p.id === perfil)?.titulo || "";
   const sintomaLabel = SINTOMAS[perfil]?.find(s => s.id === sintoma)?.txt || "";
-  const params = new URLSearchParams({ perfil: perfilLabel, problema: sintomaLabel });
+  const skills3       = perfil && sintoma ? (SKILLS[perfil]?.[sintoma] || []) : [];
+  const params = new URLSearchParams({
+    perfil: perfilLabel,
+    problema: sintomaLabel,
+    // Mismo patrón que perfil/problema — requiere 3 campos ocultos en GHL con
+    // Query Key = skill_1 / skill_2 / skill_3 para poder usarlos como merge tag en el email.
+    skill_1: skills3[0]?.n || "",
+    skill_2: skills3[1]?.n || "",
+    skill_3: skills3[2]?.n || "",
+  });
   return GHL_FORM_BASE + "?" + params.toString();
 }
 
@@ -469,9 +478,7 @@ export default function App() {
   };
   const reset = () => { setPerfil(null); setSintoma(null); go(0); };
 
-  const skills     = perfil && sintoma ? SKILLS[perfil]?.[sintoma] || [] : [];
-  const perfilObj  = PERFILES.find(p => p.id === perfil);
-  const sintomaObj = SINTOMAS[perfil]?.find(s => s.id === sintoma);
+  // skills / perfilObj / sintomaObj se eliminaron — solo se usaban en paso 4 (resultado in-app), removido: el reporte ahora se envía por email.
 
   return (
     <div style={{
@@ -523,10 +530,10 @@ export default function App() {
           Skills Diagnóstico · Smart Business
         </div>
 
-        {/* PROGRESS — pasos 2-4 (sintoma, form, resultado) */}
+        {/* PROGRESS — pasos 2-3 (sintoma, form). Paso 4 (resultado in-app) eliminado — el reporte se envía por email. */}
         {paso > 1 && (
           <div style={{ display:"flex", gap:"6px", marginBottom: isMobile?"28px":"36px" }}>
-            {[2,3,4].map((n,i)=>(
+            {[2,3].map((n,i)=>(
               <div key={i} style={{
                 height:"3px", flex:1, borderRadius:"2px",
                 background: paso > n ? C.emerald : paso === n ? C.emerald : "rgba(46,230,166,0.1)",
@@ -590,41 +597,10 @@ export default function App() {
                 Identifica tu perfil, tu cuello de botella y la ruta exacta de Skills que debes construir primero — en el orden correcto.
               </p>
 
-              {/* Stats row */}
-              <div style={{
-                display:"flex", gap: isMobile?"16px":"32px",
-                justifyContent: isMobile?"flex-start":"center",
-                flexWrap:"wrap",
-                marginBottom: isMobile?"32px":"44px",
-              }}>
-                {[
-                  { num:"10", label:"Perfiles profesionales" },
-                  { num:"2",  label:"Preguntas para tu diagnóstico" },
-                  { num:"3",  label:"Skills recomendadas en orden" },
-                ].map((s,i)=>(
-                  <div key={i} style={{ textAlign:"center" }}>
-                    <div style={{
-                      fontSize: isMobile?"26px":"34px", fontWeight:800,
-                      fontFamily:fontDisplay, letterSpacing:"-0.03em",
-                      color: C.emerald,
-                      lineHeight:1,
-                    }}>{s.num}</div>
-                    <div style={{ fontSize:"12px", color:C.muted, fontFamily:font, marginTop:"4px" }}>{s.label}</div>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* ── PERFILES ── */}
             <div style={{ marginBottom: isMobile?"40px":"56px" }}>
-              <div style={{
-                fontSize: isMobile?"13px":"11px", color:C.emerald, letterSpacing:"0.14em",
-                fontFamily:font, fontWeight:700, textTransform:"uppercase",
-                marginBottom:"12px",
-                textAlign: isMobile?"left":"center",
-              }}>
-                ¿Para quién es esto?
-              </div>
               <h2 style={{
                 fontSize: isMobile?"22px":"32px",
                 fontFamily:fontDisplay, fontWeight:800, color:"#faf8f4",
@@ -705,39 +681,18 @@ export default function App() {
               </div>
             </div>
 
-            {/* ── CTA FINAL ── */}
+            {/* ── NOTA FINAL ── (botón "Comenzar diagnóstico" eliminado — se accede directo desde las cards de perfil arriba) */}
             <div style={{
               textAlign: isMobile ? "left" : "center",
               paddingTop: isMobile?"0":"8px",
             }}>
               <p style={{
                 fontSize: isMobile?"14px":"16px", color:C.sub,
-                fontFamily:font, marginBottom:"20px", lineHeight:1.6,
+                fontFamily:font, lineHeight:1.6,
                 maxWidth:"420px",
                 marginLeft:"auto", marginRight:"auto",
               }}>
-                El diagnóstico toma menos de 2 minutos. Sin registro previo.
-              </p>
-              <button
-                onClick={()=>{ document.getElementById("perfiles-grid")?.scrollIntoView({ behavior:"smooth", block:"start" }); }}
-                onMouseEnter={()=>setHov("start")}
-                onMouseLeave={()=>setHov(null)}
-                style={{
-                  background: hov==="start" ? "#A24F23" : C.rust,
-                  color:"#161512", border:"none", borderRadius:"100px",
-                  padding: isMobile?"18px 32px":"18px 40px",
-                  fontSize:"13px", textTransform:"uppercase",
-                  fontFamily:font, fontWeight:700, cursor:"pointer",
-                  transition:"all 0.18s ease",
-                  width: isMobile?"100%":"auto",
-                  boxShadow: hov==="start" ? "0 8px 32px rgba(194,98,46,0.35)" : "0 4px 20px rgba(194,98,46,0.2)",
-                  letterSpacing:"0.06em",
-                }}
-              >
-                Comenzar diagnóstico →
-              </button>
-              <p style={{ marginTop:"14px", fontSize:"12px", color:C.muted, fontFamily:font }}>
-                Sin registro · Sin formularios previos · Resultado inmediato
+                Recibe el diagnóstico en tu correo
               </p>
             </div>
 
@@ -852,34 +807,22 @@ export default function App() {
               </p>
             )}
 
-            {/* Botón — aparece únicamente tras la señal explícita de envío exitoso de GHL */}
+            {/* Confirmación final — el formulario es la última pantalla del flujo. El reporte con las 3 skills se envía por email, no se muestra in-app. */}
             {showManual && (
               <div style={{
                 textAlign:"center",
-                padding:"16px",
+                padding:"20px",
                 background:"rgba(46,230,166,0.04)",
                 border:"1px solid rgba(46,230,166,0.12)",
                 borderRadius:"10px",
                 marginBottom:"16px",
               }}>
-                <p style={{ fontSize:"13px", color:C.sub, fontFamily:font, marginBottom:"12px", lineHeight:1.5 }}>
+                <p style={{ fontSize:"14px", color:"#faf8f4", fontFamily:font, fontWeight:700, marginBottom:"6px" }}>
                   ✓ Datos enviados correctamente
                 </p>
-                <button
-                  onClick={()=>go(4)}
-                  onMouseEnter={()=>setHov("manual")}
-                  onMouseLeave={()=>setHov(null)}
-                  style={{
-                    background: hov==="manual" ? "#A24F23" : C.rust,
-                    color:"#161512", border:"none", borderRadius:"100px",
-                    padding:"13px 26px", fontSize:"13px", textTransform:"uppercase",
-                    fontFamily:font, fontWeight:700, letterSpacing:"0.06em",
-                    cursor:"pointer", transition:"background 0.16s ease",
-                    width: isMobile ? "100%" : "auto",
-                  }}
-                >
-                  Ver mi diagnóstico →
-                </button>
+                <p style={{ fontSize:"13px", color:C.sub, fontFamily:font, lineHeight:1.5 }}>
+                  Revisa tu correo — ahí te enviamos tu diagnóstico con las 3 Skills recomendadas.
+                </p>
               </div>
             )}
 
@@ -892,137 +835,6 @@ export default function App() {
           </div>
         )}
 
-        {/* ══ PASO 4 — RESULTADO ══ */}
-        {paso === 4 && (
-          <div>
-            {/* Confirmación */}
-            <div style={{
-              display:"inline-flex", alignItems:"center", gap:"8px",
-              background:"rgba(46,230,166,0.08)", border:"1px solid rgba(46,230,166,0.2)",
-              borderRadius:"100px", padding:"6px 16px",
-              marginBottom: isMobile?"20px":"28px",
-            }}>
-              <span style={{ color:C.emerald, fontSize:"14px", fontWeight:700 }}>✓</span>
-              <span style={{ fontSize:"13px", color:C.emerald, fontFamily:font, fontWeight:600 }}>
-                Registro completado · Revisa tu email
-              </span>
-            </div>
-
-            {/* Contexto */}
-            <div style={{
-              background:"rgba(46,230,166,0.05)",
-              border:"1px solid rgba(46,230,166,0.15)",
-              borderRadius:"10px",
-              padding: isMobile?"14px 16px":"16px 20px",
-              marginBottom: isMobile?"24px":"32px",
-            }}>
-              <div style={{ fontSize: isMobile?"13px":"11px", color:C.emerald, letterSpacing:"0.12em", fontFamily:font, fontWeight:700, marginBottom:"10px", textTransform:"uppercase" }}>
-                Tu diagnóstico
-              </div>
-              <div style={{ fontSize: isMobile?"13px":"14px", color:C.sub, marginBottom:"4px", fontFamily:font }}>
-                Perfil: <span style={{ color:C.text, fontWeight:600 }}>{perfilObj?.titulo}</span>
-              </div>
-              <div style={{ fontSize: isMobile?"13px":"14px", color:C.sub, fontFamily:font, lineHeight:1.5 }}>
-                Problema: <span style={{ color:C.text, fontWeight:600 }}>{sintomaObj?.txt}</span>
-              </div>
-            </div>
-
-            <h2 style={{
-              fontSize: isMobile?"20px":"28px",
-              fontFamily:fontDisplay, fontWeight:800, color:"#faf8f4",
-              marginBottom:"8px", lineHeight:1.2, letterSpacing:"-0.02em",
-            }}>
-              Las 3 Skills que debes construir primero
-            </h2>
-            <p style={{ fontSize: isMobile?"14px":"15px", color:C.sub, marginBottom: isMobile?"20px":"24px", fontFamily:font, lineHeight:1.6 }}>
-              En este orden. Cada una prepara el terreno para la siguiente.
-            </p>
-
-            <div style={{ display:"flex", flexDirection:"column", gap:"12px", marginBottom: isMobile?"28px":"36px" }}>
-              {skills.map((sk,i)=>(
-                <div key={i} style={{
-                  background:"rgba(36,32,25,0.95)",
-                  border:`1.5px solid ${C.border}`,
-                  borderLeft:`4px solid ${ACCENT}`,
-                  borderRadius:"10px",
-                  padding: isMobile?"16px":"20px 22px",
-                  position:"relative",
-                }}>
-                  {i===0 && (
-                    <div style={{
-                      position:"absolute", top:"14px", right:"14px",
-                      fontSize:"10px", color:C.emerald, letterSpacing:"0.1em",
-                      background:"rgba(46,230,166,0.1)",
-                      borderRadius:"100px", padding:"3px 10px",
-                      fontFamily:font, fontWeight:700,
-                    }}>PRIMERO</div>
-                  )}
-                  <div style={{ display:"flex", gap:"14px", alignItems:"flex-start" }}>
-                    <div style={{
-                      width:40, height:40, flexShrink:0, borderRadius:"10px",
-                      background:`rgba(${ACCENT_RGB},0.1)`,
-                      border:`1.5px solid rgba(${ACCENT_RGB},0.25)`,
-                      display:"flex", alignItems:"center", justifyContent:"center",
-                    }}>
-                      <span style={{ fontSize:"14px", color:ACCENT, fontWeight:800, fontFamily:font }}>0{i+1}</span>
-                    </div>
-                    <div style={{ flex:1, paddingRight: i===0 ? (isMobile?"64px":"72px") : 0 }}>
-                      <div style={{ fontSize: isMobile?"15px":"17px", fontWeight:700, color:"#faf8f4", fontFamily:font, marginBottom:"6px", lineHeight:1.3 }}>
-                        {sk.n}
-                      </div>
-                      <div style={{ fontSize: isMobile?"13px":"14px", color:C.sub, lineHeight:1.65, fontFamily:font }}>
-                        {sk.r}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* CTAs */}
-            <div style={{
-              background:"rgba(36,32,25,0.75)",
-              border:`1px solid ${C.border}`,
-              borderRadius:"12px",
-              padding: isMobile?"20px":"28px",
-              marginBottom:"20px",
-            }}>
-              <div style={{ fontSize: isMobile?"13px":"11px", color:C.emerald, letterSpacing:"0.12em", fontFamily:font, fontWeight:700, marginBottom:"10px", textTransform:"uppercase" }}>
-                ¿Qué sigue?
-              </div>
-              <p style={{ fontSize: isMobile?"14px":"15px", color:C.sub, lineHeight:1.7, fontFamily:font, marginBottom:"18px" }}>
-                Estas Skills ya están construidas y listas para usar en Claude. Puedes obtenerlas de forma individual o en el Pack completo para tu perfil.
-              </p>
-              <div style={{ display:"flex", flexDirection:"column", gap:"10px" }}>
-                <button
-                  onMouseEnter={()=>setHov("pack")}
-                  onMouseLeave={()=>setHov(null)}
-                  style={{
-                    background: hov==="pack" ? "#A24F23" : C.rust,
-                    color:"#161512", border:"none", borderRadius:"100px",
-                    padding: isMobile?"16px 24px":"16px 28px",
-                    fontSize:"13px", textTransform:"uppercase",
-                    fontFamily:font, fontWeight:700, letterSpacing:"0.06em",
-                    cursor:"pointer", textAlign:"center",
-                    transition:"background 0.16s ease", width:"100%",
-                  }}
-                  onClick={()=>window.open("https://skillspack.rodolfobuitrago.com/","_blank")}
-                >
-                  Ver Pack completo para mi perfil →
-                </button>
-              </div>
-            </div>
-
-            <button
-              onClick={reset}
-              onMouseEnter={e=>e.currentTarget.style.color=C.sub}
-              onMouseLeave={e=>e.currentTarget.style.color=C.muted}
-              style={{ background:"transparent", border:"none", color:C.muted, fontSize:"14px", cursor:"pointer", fontFamily:font, fontWeight:500, padding:"4px 0" }}
-            >
-              ← Hacer diagnóstico de nuevo
-            </button>
-          </div>
-        )}
 
         {/* FOOTER */}
         <div style={{
