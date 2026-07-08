@@ -436,15 +436,29 @@ export default function App() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Detecta el envío exitoso del formulario GHL exclusivamente por la señal explícita
-  // de postMessage. Se eliminó el heurístico por resize del iframe: contaba cualquier
-  // cambio de altura >30px (incluyendo el que genera GHL al mostrar errores de validación
-  // en campos vacíos) como si fuera un submit exitoso — eso causaba el falso positivo
-  // reportado (formulario en blanco + enviar → aparecía igual el botón "Ver mi diagnóstico").
+  // Detecta el envío exitoso del formulario GHL con dos señales combinadas:
+  //
+  // 1) postMessage explícito (ideal, instantáneo) — si GHL lo envía en un formato reconocible.
+  // 2) Fallback por resize del iframe, AJUSTADO para no repetir el falso positivo original:
+  //    - Requiere un ÚNICO salto de altura GRANDE (>80px), no dos cambios pequeños cualesquiera.
+  //      Un error de validación (campos vacíos) suele mover la altura unos pocos px al insertar
+  //      texto de error; el reemplazo completo del formulario por la tarjeta de "gracias" de GHL
+  //      (confirmado visualmente: caso real reportado) es un salto grande y único.
+  //    - Ignora resizes durante los primeros 1200ms tras montar el iframe (es solo la carga
+  //      inicial del formulario, no una respuesta a un submit).
+  //
+  // Este fallback existe porque no hay certeza de que el postMessage de GHL llegue en el
+  // formato exacto que se está escuchando — no hay forma de verificarlo empíricamente sin
+  // acceso a un entorno GHL real. Si el postMessage sí llega, el resize nunca llega a activarse
+  // (paso3Submitted.current ya estaría en true).
   useEffect(() => {
     if (paso !== 3) return;
     paso3Submitted.current = false;
     setShowManual(false);
+
+    const mountedAt = Date.now();
+    const GRACE_MS = 1200;
+    const MIN_JUMP_PX = 80;
 
     const handler = (e) => {
       try {
@@ -460,9 +474,26 @@ export default function App() {
         }
       } catch {}
     };
-
     window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
+
+    const iframe = document.querySelector('iframe[data-form-id]');
+    let prevHeight = 0;
+    const resizeObserver = iframe ? new ResizeObserver(() => {
+      if (paso3Submitted.current) return;
+      if (Date.now() - mountedAt < GRACE_MS) { prevHeight = iframe.offsetHeight; return; }
+      const h = iframe.offsetHeight;
+      if (prevHeight > 0 && Math.abs(h - prevHeight) >= MIN_JUMP_PX) {
+        paso3Submitted.current = true;
+        setShowManual(true);
+      }
+      prevHeight = h;
+    }) : null;
+    if (resizeObserver && iframe) resizeObserver.observe(iframe);
+
+    return () => {
+      window.removeEventListener("message", handler);
+      if (resizeObserver) resizeObserver.disconnect();
+    };
   }, [paso]);
 
   const go = (n) => {
