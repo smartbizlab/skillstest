@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diagnóstico de Skills | Smart Business</title>
+<title>Diagnóstico de Skills | IAdopters</title>
 <meta name="description" content="Descubre en 2 minutos las 3 skills de Claude más importantes para tu perfil profesional.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -234,6 +234,34 @@
   .thankyou-wrap{ text-align:center; padding:40px 0; }
   .thankyou-wrap h2{ margin-bottom:12px; }
   .thankyou-wrap p{ color:var(--text-secondary); font-weight:300; margin-bottom:32px; }
+
+  /* Ajustes responsive — regla fija del proyecto: peso mínimo 400 en contenido dentro de cards en mobile,
+     porque weight 300 (el de la tipografía IBM Plex Sans) pierde legibilidad en pantallas chicas. */
+  @media (max-width:599px){
+    .wrap{ padding:32px 20px 48px; }
+    .card-sub,
+    .skill-body p,
+    .recap,
+    p.lead,
+    .cta-box p,
+    .form-note,
+    .thankyou-wrap p,
+    .ghl-loading{
+      font-weight:400;
+    }
+    .card{ padding:20px; }
+    .skill-card{ padding:20px; gap:12px; }
+    .footer{
+      flex-direction:column;
+      align-items:flex-start;
+      gap:6px;
+    }
+  }
+
+  @media (max-width:360px){
+    .eyebrow{ font-size:10px; letter-spacing:0.14em; }
+    .footer{ font-size:10px; letter-spacing:0.14em; }
+  }
 </style>
 </head>
 <body>
@@ -560,7 +588,7 @@ function progressBar(filledCount){
   return `<div class="progress">${segs}</div>`;
 }
 
-function eyebrow(){ return `<div class="eyebrow">Skills Diagnóstico · Smart Business</div>`; }
+function eyebrow(){ return `<div class="eyebrow">Skills Diagnóstico · IAdopters</div>`; }
 
 function render(){
   if(state.step === "landing") return renderLanding();
@@ -591,7 +619,7 @@ function renderLanding(){
     <p class="lead">Elige tu perfil y en menos de 2 minutos te decimos cuáles son las 3 skills de Claude más importantes para resolver tu dolor de hoy. Ya están construidas y listas para instalar.</p>
     <div class="grid">${cards}</div>
     <div class="footer">
-      <span>Smart Business</span>
+      <span>IAdopters</span>
       <span>◆</span>
       <span>Skills para Claude</span>
     </div>
@@ -759,7 +787,7 @@ function renderResult(){
     </div>
     <a href="#" class="link-back" onclick="goLanding(event)">← Hacer diagnóstico de nuevo</a>
     <div class="footer">
-      <span>Smart Business</span>
+      <span>IAdopters</span>
       <span>◆</span>
       <span>Skills para Claude</span>
     </div>
